@@ -10,7 +10,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from graphql.core.error import GraphQLError, format_error
 from flask.ext.api.decorators import set_parsers
 from flask_api import parsers
-
+from utils import *
 
 app = FlaskAPI(__name__)
 app.config.from_object('settings')
@@ -20,31 +20,6 @@ toolbar = DebugToolbarExtension(app)
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.StreamHandler())
 logger.setLevel(logging.DEBUG)
-
-
-class GraphQLParser(parsers.BaseParser):
-
-    """docstring for GraphQLParser"""
-
-    # media_type = 'application/graphql'
-    media_type = '*/*'
-
-    def parse(self, stream, media_type, content_length=None):
-        data = stream.read().decode('ascii')
-        return data
-
-
-def form_error(error):
-    if isinstance(error, GraphQLError):
-        return format_error(error)
-    return error
-
-
-def format_result(result):
-    if result.errors:
-        raise result.errors[0]
-    data = result.data
-    return data
 
 
 @app.route('/init')

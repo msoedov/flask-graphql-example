@@ -1,30 +1,29 @@
-from app import app
-
-import os
-import json
-import unittest
+from flask.ext.testing import TestCase
+from flask import url_for
 from factories import UserFactory
 from api import app
 
 
-class FlaskTestCase(unittest.TestCase):
-    # Our first unit test - We are using the unittest
-    # library, calling the _add_numbers route from the app
-    # passing a pair of numbers, and checking that the
-    # returned value, contained on the JSON response, match
-    # the sum of those parameters
+class AppTestCase(TestCase):
 
-    def setUp(self):
-        self.tester = app.test_client(self)
+    def create_app(self):
+        return app
 
     def test_post_creation(self):
         author = UserFactory()
-        response = self.tester.post('ql/{}/posts'.format(author.id),
-                                    content_type='application/json', data={'title': 'Test title', 'content': 'test_content'})
+        response = self.client.post(url_for('create_post', user_id=author.id),
+                                    data={'title': 'Test title', 'content': 'test-content'})
         self.assertEqual(response.status_code, 201)
-        # Check that the result sent is 8: 2+6
-        self.assertEqual(json.loads(response.data), {"result": 8})
+        # Check that the response body is empty
+        self.assertEqual(response.json, {})
 
+    def test_post_validation(self):
 
-# if __name__ == '__main__':
-#     unittest.main()
+        bad_posts = [{}, {'foo': 2}, {'tags': []}]
+
+        author = UserFactory()
+
+        for p in bad_posts:
+            response = self.client.post(url_for('create_post', user_id=author.id),
+                                        data=p)
+            self.assertEqual(response.status_code, 400)

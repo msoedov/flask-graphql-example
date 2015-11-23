@@ -3,11 +3,34 @@ from mongoengine import *
 connect('tumblelog')
 
 
+class BaseQuerySet(QuerySet):
+
+    """
+    A base queryset with handy extras
+    """
+
+    def get_or_404(self, *args, **kwargs):
+        try:
+            return self.get(*args, **kwargs)
+        except (MultipleObjectsReturned, DoesNotExist, ValidationError):
+            abort(404)
+
+    def first_or_404(self):
+
+        obj = self.first()
+        if obj is None:
+            abort(404)
+
+        return obj
+
+
 class User(Document):
     email = StringField(required=True)
     first_name = StringField(max_length=50)
     last_name = StringField(max_length=50)
     password = StringField(max_length=200)
+
+    meta = {'queryset_class': BaseQuerySet}
 
 
 class Comment(EmbeddedDocument):

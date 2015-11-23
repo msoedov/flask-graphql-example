@@ -1,15 +1,15 @@
 import logging
+import trafaret as t
 
-from flask import request, jsonify
+from flask import request
 from flask.ext.api import FlaskAPI
 from flask_swagger import swagger
+from flask_debugtoolbar import DebugToolbarExtension
+from flask.ext.api.decorators import set_parsers
+from ql import schema
+
 from factories import *
 from models import *
-from ql import schema
-from flask_debugtoolbar import DebugToolbarExtension
-from graphql.core.error import GraphQLError, format_error
-from flask.ext.api.decorators import set_parsers
-from flask_api import parsers
 from utils import *
 
 app = FlaskAPI(__name__)
@@ -20,15 +20,6 @@ toolbar = DebugToolbarExtension(app)
 logger = logging.getLogger(__name__)
 logger.addHandler(logging.StreamHandler())
 logger.setLevel(logging.DEBUG)
-
-
-@app.route('/init')
-def init():
-    User.objects.filter(email='idella00@hotmail.com').delete()
-    u = UserFactory(email='idella00@hotmail.com')
-    posts = PostFactory.create_batch(10, author=u)
-    logger.debug(posts[0].comments)
-    return posts
 
 
 def user_query(email):
@@ -55,34 +46,54 @@ def user_query(email):
 def index():
     """
     Example query
-    -----
-    query Yo {
-      user(email: $email ) {
-            email,
-            posts {
-                title
-                etags
-                tags
-                comments {
-                    name
-                    content
-                }
-            }
-      }
-    }
+
+    # query Yo {
+    #   user(email: "$email" ) {
+    #         email,
+    #         posts {
+    #             title
+    #             etags
+    #             tags
+    #             comments {
+    #                 name
+    #                 content
+    #             }
+    #         }
+    #   }
+    # }
+
     """
     query = request.data or user_query("idella00@hotmail.com")
 
     logger.debug('Query: %s', query)
     result = schema.execute(query)
-    r = format_result(result)
-    return r
+    result_hash = format_result(result)
+    return result_hash
 
-# @app.errorhandler(InvalidAPIUsage)
-# def handle_invalid_usage(error):
-# response = jsonify(error.to_dict())
-# response.status_code = error.status_code
-# return response
+
+@app.route('/ql/<user_id>/posts', methods=['POST'])
+def create_post(user_id):
+
+    post_schema = t.Dict({
+        'title': t.String(min_length=2),
+        'content': t.String(min_length=2),
+        t.Key('tags', optional=True): t.List(t.String, min_length=2),
+    })
+
+    post_data = post_schema.check(request.data)
+    user = User.objects.get_or_404(id=user_id)
+    post = Post(autor=user, **post_data)
+    post.save()
+    logger.debug('New post id %d', post.id)
+    return {}, 201
+
+
+@app.errorhandler(t.DataError)
+def handle_invalid_usage(error):
+    logger.debug(vars(error))
+    response = jsonify(error.to_dict())
+    response.status_code = error.status_code
+    return response
 
 
 @app.route('/health-check')

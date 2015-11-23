@@ -1,18 +1,30 @@
+from app import app
+
+import os
+import json
 import unittest
+from factories import UserFactory
+from api import app
 
 
-class MyappTestCase(unittest.TestCase):
+class FlaskTestCase(unittest.TestCase):
+    # Our first unit test - We are using the unittest
+    # library, calling the _add_numbers route from the app
+    # passing a pair of numbers, and checking that the
+    # returned value, contained on the JSON response, match
+    # the sum of those parameters
 
     def setUp(self):
-        myapp.app.config['DEBUG'] = tempfile.mkstemp()
-        self.app = myapp.app.test_client()
+        self.tester = app.test_client(self)
 
-    def tearDown(self):
-        pass
+    def test_post_creation(self):
+        author = UserFactory()
+        response = self.tester.post('ql/{}/posts'.format(author.id),
+                                    content_type='application/json', data={'title': 'Test title', 'content': 'test_content'})
+        self.assertEqual(response.status_code, 201)
+        # Check that the result sent is 8: 2+6
+        self.assertEqual(json.loads(response.data), {"result": 8})
 
-    def test_index(self):
-        rv = self.app.get('/')
-        assert '<h2>Posts</h2>' in rv.data
 
-if __name__ == '__main__':
-    unittest.main()
+# if __name__ == '__main__':
+#     unittest.main()

@@ -52,6 +52,7 @@ class PostField(graphene.ObjectType):
 
 
 class UserField(graphene.ObjectType):
+    id = graphene.IntField()
     email = graphene.StringField()
     last_name = graphene.StringField()
     id = graphene.StringField()

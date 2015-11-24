@@ -44,4 +44,4 @@ class Post(Document):
     author = ReferenceField(User)
     tags = ListField(StringField(max_length=30))
     comments = ListField(EmbeddedDocumentField(Comment))
-    meta = {'allow_inheritance': True}
+    meta = {'allow_inheritance': True, 'queryset_class': BaseQuerySet}

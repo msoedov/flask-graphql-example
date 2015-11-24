@@ -60,3 +60,7 @@ class PostFactory(factory.mongoengine.MongoEngineFactory):
     @factory.lazy_attribute
     def comments(self):
         return CommentFactory.create_batch(5)
+
+    @factory.lazy_attribute
+    def content(self):
+        return fake.text()

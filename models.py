@@ -5,7 +5,6 @@ connect('tumblelog')
 
 
 class BaseQuerySet(QuerySet):
-
     """
     A base queryset with handy extras
     """

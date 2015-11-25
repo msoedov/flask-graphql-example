@@ -23,7 +23,7 @@ logger = logging.getLogger('app')
 
 
 def user_query(email):
-    return'''
+    return '''
     query Yo {
       user(email: \"%s\") {
             email,
@@ -109,7 +109,9 @@ def create_post(user_id):
     post_schema = t.Dict({
         'title': t.String(min_length=2),
         'content': t.String(min_length=2),
-        t.Key('tags', optional=True): t.List(t.String, min_length=1),
+        t.Key('tags',
+              optional=True): t.List(t.String,
+                                     min_length=1),
     })
 
     post_data = post_schema.check(request.data)
@@ -137,10 +139,7 @@ def create_user():
 
 @app.route('/ql/<user_id>/posts/<post_id>', methods=['POST'])
 def create_comment(user_id, post_id):
-    comment_schema = t.Dict({
-        'name': t.String(min_length=2, max_length=30),
-        'content': t.String(min_length=2),
-    })
+    comment_schema = t.Dict({'name': t.String(min_length=2, max_length=30), 'content': t.String(min_length=2),})
 
     comment_data = comment_schema.check(request.data)
     post = Post.objects.get_or_404(id=post_id)

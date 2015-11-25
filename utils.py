@@ -5,7 +5,6 @@ from flask_api import parsers
 
 
 class GraphQLParser(parsers.BaseParser):
-
     """docstring for GraphQLParser"""
 
     # media_type = 'application/graphql'

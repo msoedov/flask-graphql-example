@@ -1,9 +1,7 @@
 import factory
 from faker import Factory
 
-
 from models import *
-
 
 fake = Factory.create()
 

@@ -12,8 +12,7 @@ def construct(object_type, mongo_obj):
     field_names = [f.field_name for f in object_type._meta.fields]
     if 'id' in field_names:
         field_names.append('_id')
-    kwargs = {attr: val for attr,
-              val in mongo_obj.to_mongo().items() if attr in field_names}
+    kwargs = {attr: val for attr, val in mongo_obj.to_mongo().items() if attr in field_names}
     if '_id' in kwargs:
         kwargs['id'] = kwargs.pop('_id')
     return object_type(**kwargs)
@@ -21,8 +20,7 @@ def construct(object_type, mongo_obj):
 
 class Query(graphene.ObjectType):
     hello = graphene.StringField(description='A typical hello world')
-    ping = graphene.StringField(description='Ping someone',
-                                to=graphene.Argument(graphene.String))
+    ping = graphene.StringField(description='Ping someone', to=graphene.Argument(graphene.String))
 
     def resolve_hello(self, args, info):
         return 'World'
@@ -66,8 +64,7 @@ class UserField(graphene.ObjectType):
 
 class UserQuery(graphene.ObjectType):
     user = graphene.Field(UserField, email=graphene.Argument(graphene.String))
-    ping = graphene.StringField(description='Ping someone',
-                                to=graphene.Argument(graphene.String))
+    ping = graphene.StringField(description='Ping someone', to=graphene.Argument(graphene.String))
 
     def resolve_hello(self, args, info):
         return 'World'
@@ -78,5 +75,6 @@ class UserQuery(graphene.ObjectType):
 
     def resolve_ping(self, args, info):
         return 'Pinging {}'.format(args.get('to'))
+
 
 schema = graphene.Schema(query=UserQuery)

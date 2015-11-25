@@ -12,8 +12,11 @@ class AppTestCase(TestCase):
 
     def test_post_creation(self):
         author = UserFactory()
-        response = self.client.post(url_for('create_post', user_id=author.id),
-                                    data={'title': 'Test title', 'content': 'test-content'})
+        response = self.client.post(
+            url_for('create_post',
+                    user_id=author.id),
+            data={'title': 'Test title',
+                  'content': 'test-content'})
         self.assertEqual(response.status_code, 201)
         # Check that the response body is empty
         self.assertIn('id', response.json)
@@ -25,13 +28,11 @@ class AppTestCase(TestCase):
         author = UserFactory()
 
         for p in bad_posts:
-            response = self.client.post(url_for('create_post', user_id=author.id),
-                                        data=p)
+            response = self.client.post(url_for('create_post', user_id=author.id), data=p)
             self.assert400(response)
 
     def test_user_creation(self):
-        response = self.client.post(url_for('create_user'),
-                                    data={'email': 'foo@bar', 'first_name': 'Joe', 'last_name': 'Doe'})
+        response = self.client.post(url_for('create_user'), data={'email': 'foo@bar', 'first_name': 'Joe', 'last_name': 'Doe'})
         self.assertEqual(response.status_code, 201)
         # Check that the response body is empty
         self.assertIn('id', response.json)
@@ -40,8 +41,12 @@ class AppTestCase(TestCase):
         author = UserFactory()
         post = PostFactory(author=author)
         # self.assertEqual(post.comments, [])
-        response = self.client.post(url_for('create_comment', user_id=author.id, post_id=post.id),
-                                    data={'name': 'foo', 'content': 'bar'})
+        response = self.client.post(
+            url_for('create_comment',
+                    user_id=author.id,
+                    post_id=post.id),
+            data={'name': 'foo',
+                  'content': 'bar'})
         self.assertEqual(response.status_code, 201)
         # Check that the response body is empty
         self.assertIn('id', response.json)

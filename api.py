@@ -148,7 +148,7 @@ def create_comment(user_id, post_id):
     post.comments.append(comment)
     post.save()
     # publish data to user channel
-    return {'id': str(comment.id)}, status.HTTP_201_CREATED
+    return {}, status.HTTP_201_CREATED
 
 
 @app.errorhandler(t.DataError)

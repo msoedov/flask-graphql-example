@@ -40,14 +40,9 @@ class AppTestCase(TestCase):
     def test_comment_creation(self):
         author = UserFactory()
         post = PostFactory(author=author)
-        # self.assertEqual(post.comments, [])
-        response = self.client.post(
-            url_for('create_comment',
-                    user_id=author.id,
-                    post_id=post.id),
-            data={'name': 'foo',
-                  'content': 'bar'})
+        self.assertEqual(len(post.comments), 5)
+        response = self.client.post(url_for('create_comment', user_id=author.id, post_id=post.id), data={'name': 'foo', 'content': 'bar'})
         self.assertEqual(response.status_code, 201)
         # Check that the response body is empty
-        self.assertIn('id', response.json)
-        self.assertEqual(Post(id=post.id).comments, [])
+        self.assertEqual(response.json, {})
+        self.assertEqual(len(Post.objects.get(id=post.id).comments), 6)

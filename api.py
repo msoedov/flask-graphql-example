@@ -2,7 +2,7 @@ import logging
 import status
 import trafaret as t
 
-from graphql.core.error import GraphQLError
+from graphql.core.error import GraphQLError, format_error
 from flask import request, redirect
 from flask.ext.api import FlaskAPI
 from flask.ext.api.decorators import set_parsers
@@ -160,8 +160,9 @@ def handle_invalid_usage(data_error):
 
 @app.errorhandler(GraphQLError)
 def handle_invalid_usage(graphql_error):
-    logger.exception(graphql_error)
-    return {}, status.HTTP_400_BAD_REQUEST
+    error_message = format_error(graphql_error)
+    logger.error(error_message)
+    return {'error': error_message}, status.HTTP_400_BAD_REQUEST
 
 
 @app.route('/health-check')

@@ -1,6 +1,7 @@
 from flask.ext.testing import TestCase
 from flask import url_for
 from factories import UserFactory, PostFactory
+from models import Post
 from api import app
 
 
@@ -26,7 +27,7 @@ class AppTestCase(TestCase):
         for p in bad_posts:
             response = self.client.post(url_for('create_post', user_id=author.id),
                                         data=p)
-            self.assertEqual(response.status_code, 400)
+            self.assert400(response)
 
     def test_user_creation(self):
         response = self.client.post(url_for('create_user'),
@@ -38,8 +39,10 @@ class AppTestCase(TestCase):
     def test_comment_creation(self):
         author = UserFactory()
         post = PostFactory(author=author)
+        # self.assertEqual(post.comments, [])
         response = self.client.post(url_for('create_comment', user_id=author.id, post_id=post.id),
                                     data={'name': 'foo', 'content': 'bar'})
         self.assertEqual(response.status_code, 201)
         # Check that the response body is empty
         self.assertIn('id', response.json)
+        self.assertEqual(Post(id=post.id).comments, [])

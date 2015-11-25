@@ -1,3 +1,4 @@
+from flask import abort
 from mongoengine import *
 
 connect('tumblelog')
@@ -37,6 +38,9 @@ class Comment(EmbeddedDocument):
     content = StringField()
     name = StringField(max_length=120)
 
+    def __str__(self):
+        return "Comment<name:{self.name}>".format(self=self)
+
 
 class Post(Document):
     title = StringField(max_length=120, required=True)
@@ -45,3 +49,6 @@ class Post(Document):
     tags = ListField(StringField(max_length=30))
     comments = ListField(EmbeddedDocumentField(Comment))
     meta = {'allow_inheritance': True, 'queryset_class': BaseQuerySet}
+
+    def __str__(self):
+        return "<titile:{self.title}>".format(self)

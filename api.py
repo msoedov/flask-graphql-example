@@ -14,14 +14,12 @@ from factories import *
 from models import *
 from utils import *
 
-app = FlaskAPI(__name__,  static_url_path='/static')
-app.config.from_object('settings')
+app = FlaskAPI(__name__, static_url_path='/static')
+app.config.from_object('settings.DevConfig')
 
 toolbar = DebugToolbarExtension(app)
 
-logger = logging.getLogger(__name__)
-logger.addHandler(logging.StreamHandler())
-logger.setLevel(logging.DEBUG)
+logger = logging.getLogger('app')
 
 
 def user_query(email):
@@ -147,8 +145,9 @@ def create_comment(user_id, post_id):
     comment_data = comment_schema.check(request.data)
     post = Post.objects.get_or_404(id=post_id)
     logger.debug(comment_data)
-    comment = post.comments.create(**comment_data)
-    logger.debug('New comment id %s', comment.id)
+    comment = Comment(**comment_data)
+    post.comments.append(comment)
+    post.save()
     # publish data to user channel
     return {'id': str(comment.id)}, status.HTTP_201_CREATED
 
@@ -161,9 +160,8 @@ def handle_invalid_usage(data_error):
 
 
 @app.errorhandler(GraphQLError)
-def handle_invalid_usage(grapql_error):
-    print(grapql_error)
-    logger.error(grapql_error)
+def handle_invalid_usage(graphql_error):
+    logger.exception(graphql_error)
     return {}, status.HTTP_400_BAD_REQUEST
 
 

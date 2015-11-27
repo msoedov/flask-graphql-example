@@ -1,0 +1,9 @@
+web:
+  build: .
+  ports:
+    - "127.0.0.1:5000:5000"
+  links:
+    - db
+db:
+  image: mongo:3.0.2
+

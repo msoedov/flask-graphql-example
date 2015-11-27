@@ -1,3 +1,5 @@
+import os
+from mongoengine import connect
 import logging.config as log_config
 
 
@@ -6,6 +8,13 @@ class DevConfig(object):
 
     SECRET_KEY = 'sdfsdf82347$$%$%$%$&fsdfs!!ASx+__WEBB$'
 
+    MONGODB_IP = os.environ.get('DB_PORT_27017_TCP_ADDR', '127.0.0.1')
+    MONGODB_SETTINGS = {
+        'db': 'tumblelog',
+        'host': MONGODB_IP,
+        'port': 27017
+    }
+    connect(**MONGODB_SETTINGS)
     LOGGING = {
         'version': 1,
         'disable_existing_loggers': True,

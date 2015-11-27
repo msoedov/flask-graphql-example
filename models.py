@@ -1,8 +1,6 @@
 from flask import abort
 from mongoengine import *
 
-connect('tumblelog')
-
 
 class BaseQuerySet(QuerySet):
     """

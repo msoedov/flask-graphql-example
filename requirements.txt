@@ -7,6 +7,9 @@ Flask_API == 0.6.4
 # settings.py: 58
 coloredlogs == 5.0
 
+# runtime.py: 2
+gunicorn == 19.3.0
+
 # factories.py: 2
 fake_factory == 0.5.3
 

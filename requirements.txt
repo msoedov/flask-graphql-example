@@ -4,7 +4,7 @@
 # utils.py: 4
 Flask_API == 0.6.4
 
-# settings.py: 58
+# settings.py: 67
 coloredlogs == 5.0
 
 # runtime.py: 2
@@ -26,6 +26,7 @@ flask_swagger == 0.2.10
 graphene == 0.3.0
 
 # models.py: 2
+# settings.py: 2
 mongoengine == 0.10.0
 
 # api.py: 9
@@ -36,6 +37,9 @@ trafaret == 0.6.1
 
 # factories.py: 1
 factory_boy == 2.6.0
+
+# runtime.py: 3
+pigar == 0.6.3
 
 # api.py: 5
 # utils.py: 3

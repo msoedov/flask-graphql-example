@@ -1,7 +1,7 @@
 default: format test
 
 test:
-	@nosetests --with-coverage --cover-package quick --with-doctest --rednose --nocapture
+	@nosetests --with-doctest --rednose --nocapture
 
 
 watch:
@@ -20,3 +20,6 @@ format:
 	@echo "Formating:"
 	@yapf  -dr ./
 	@yapf  -ir ./
+
+req-update:
+	@pigar

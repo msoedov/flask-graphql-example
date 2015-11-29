@@ -16,7 +16,7 @@ def init():
     user = UserFactory(email='idella00@hotmail.com')
     logger.debug('User %s', user)
     posts = PostFactory.create_batch(10, author=user)
-    logger.debug('Created post %s', posts)
+    logger.debug('Created posts %s', posts)
 
 
 if __name__ == "__main__":

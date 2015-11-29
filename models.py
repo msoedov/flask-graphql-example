@@ -48,4 +48,4 @@ class Post(Document):
     meta = {'allow_inheritance': True, 'queryset_class': BaseQuerySet}
 
     def __str__(self):
-        return "<titile:{self.title}>".format(self)
+        return "<titile:{self.title}>".format(self=self)

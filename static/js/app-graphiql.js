@@ -56,7 +56,7 @@ $(function (global) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(graphQLParams)
     }).then(function (response) {
-      return response.json()
+      return response.json();
     });
   }
 

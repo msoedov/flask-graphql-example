@@ -88,7 +88,7 @@ $(function (global) {
              "#\n" +
              "# Press the run button above, or Cmd-Enter to execute the query, and the result\n" +
              "# will appear in the pane to the right.\n\n" +
-             "query Yo {\n  user(email: \"fill@me\" )" +
+             "query Yo {\n  user(email: \"idella00@hotmail.com\" )" +
               "{\n        email,\n        posts {\n            title\n            etags\n            tags\n            comments {\n                name\n                content\n            }\n        }\n  }\n}\n"
         }, toolbar),
         elem

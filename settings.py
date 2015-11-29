@@ -4,11 +4,11 @@ import logging.config as log_config
 
 
 class DevConfig(object):
-    DEBUG = True
+    DEBUG = True if os.getenv('DEBUG', default='') else False
 
     SECRET_KEY = 'sdfsdf82347$$%$%$%$&fsdfs!!ASx+__WEBB$'
 
-    MONGODB_IP = os.environ.get('DB_PORT_27017_TCP_ADDR', '127.0.0.1')
+    MONGODB_IP = os.getenv('DB_PORT_27017_TCP_ADDR', '127.0.0.1')
     MONGODB_SETTINGS = {
         'db': 'tumblelog',
         'host': MONGODB_IP,

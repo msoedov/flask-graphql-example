@@ -3,6 +3,7 @@ FROM pypy:3-onbuild
 ADD ./ /app
 WORKDIR /app
 RUN pip install -r requirements.txt
+ENV DEBUG 1
 
 EXPOSE 5000
 

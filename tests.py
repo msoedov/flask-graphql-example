@@ -1,8 +1,9 @@
-from flask.ext.testing import TestCase
 from flask import url_for
-from factories import UserFactory, PostFactory
-from models import Post
+from flask.ext.testing import TestCase
+
 from api import app
+from factories import PostFactory, UserFactory
+from models import Post
 
 
 class AppTestCase(TestCase):

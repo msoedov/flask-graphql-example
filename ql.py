@@ -1,6 +1,8 @@
 from functools import lru_cache
+
 import graphene
-from models import User, Post
+
+from models import Post, User
 
 
 @lru_cache()

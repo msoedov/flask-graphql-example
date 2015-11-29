@@ -1,6 +1,7 @@
-import os
-from mongoengine import connect
 import logging.config as log_config
+import os
+
+from mongoengine import connect
 
 
 class DevConfig(object):

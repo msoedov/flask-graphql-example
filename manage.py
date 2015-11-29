@@ -1,8 +1,8 @@
 from flask.ext.script import Manager
 
-from models import User
-from factories import UserFactory, PostFactory
 from api import app, logger
+from factories import PostFactory, UserFactory
+from models import User
 
 manager = Manager(app)
 

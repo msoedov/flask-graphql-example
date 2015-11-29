@@ -47,5 +47,3 @@ graphql_core == 0.4.7b0
 
 # api.py: 2
 python_status == 1.0.1
-
-Flask-Script

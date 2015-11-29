@@ -42,7 +42,7 @@ docker-compose up db
 
 Then you can install deps and run the python app
 ```
-pip install -r requirements.txt
+make req
 python api.py
 ```
 

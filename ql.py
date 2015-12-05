@@ -55,7 +55,6 @@ class UserField(graphene.ObjectType):
     id = graphene.IntField()
     email = graphene.StringField()
     last_name = graphene.StringField()
-    id = graphene.StringField()
     posts = graphene.ListField(PostField)
 
     @graphene.resolve_only_args
@@ -67,9 +66,6 @@ class UserField(graphene.ObjectType):
 class UserQuery(graphene.ObjectType):
     user = graphene.Field(UserField, email=graphene.Argument(graphene.String))
     ping = graphene.StringField(description='Ping someone', to=graphene.Argument(graphene.String))
-
-    def resolve_hello(self, args, info):
-        return 'World'
 
     def resolve_user(self, args, info):
         u = User.objects.get(email=args.get('email'))

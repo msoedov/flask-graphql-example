@@ -21,8 +21,8 @@ def construct(object_type, mongo_obj):
 
 
 class Query(graphene.ObjectType):
-    hello = graphene.StringField(description='A typical hello world')
-    ping = graphene.StringField(description='Ping someone', to=graphene.Argument(graphene.String))
+    hello = graphene.String(description='A typical hello world')
+    ping = graphene.String(description='Ping someone', to=graphene.Argument(graphene.String))
 
     def resolve_hello(self, args, info):
         return 'World'
@@ -32,17 +32,17 @@ class Query(graphene.ObjectType):
 
 
 class CommentField(graphene.ObjectType):
-    content = graphene.StringField()
-    name = graphene.StringField()
+    content = graphene.String()
+    name = graphene.String()
 
 
 class PostField(graphene.ObjectType):
-    id = graphene.IntField()
-    title = graphene.StringField()
-    tags = graphene.ListField(graphene.String)
-    etags = graphene.StringField()
-    comments = graphene.ListField(CommentField)
-    comments_count = graphene.IntField()
+    id = graphene.Int()
+    title = graphene.String()
+    tags = graphene.List(graphene.String)
+    etags = graphene.String()
+    comments = graphene.List(CommentField)
+    comments_count = graphene.Int()
 
     def resolve_etags(self, *a, **_):
         return "( {} )".format(self.tags)
@@ -52,10 +52,10 @@ class PostField(graphene.ObjectType):
 
 
 class UserField(graphene.ObjectType):
-    id = graphene.IntField()
-    email = graphene.StringField()
-    last_name = graphene.StringField()
-    posts = graphene.ListField(PostField)
+    id = graphene.Int()
+    email = graphene.String()
+    last_name = graphene.String()
+    posts = graphene.List(PostField)
 
     @graphene.resolve_only_args
     def resolve_posts(self):
@@ -65,7 +65,7 @@ class UserField(graphene.ObjectType):
 
 class UserQuery(graphene.ObjectType):
     user = graphene.Field(UserField, email=graphene.Argument(graphene.String))
-    ping = graphene.StringField(description='Ping someone', to=graphene.Argument(graphene.String))
+    ping = graphene.String(description='Ping someone', to=graphene.Argument(graphene.String))
 
     def resolve_user(self, args, info):
         u = User.objects.get(email=args.get('email'))

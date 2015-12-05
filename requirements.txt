@@ -23,7 +23,7 @@ Flask == 0.10.1
 flask_swagger == 0.2.10
 
 # ql.py: 2
-graphene == 0.3.0
+graphene == 0.4.3
 
 # models.py: 2
 # settings.py: 2
@@ -41,9 +41,6 @@ factory_boy == 2.6.0
 # runtime.py: 3
 pigar == 0.6.3
 
-# api.py: 5
-# utils.py: 3
-graphql_core == 0.4.7b0
 
 # api.py: 2
 python_status == 1.0.1

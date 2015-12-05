@@ -11,7 +11,7 @@ def get_comments_by_id(post_id):
 
 
 def construct(object_type, mongo_obj):
-    field_names = [f.field_name for f in object_type._meta.fields]
+    field_names = [f.attname for f in object_type._meta.fields]
     if 'id' in field_names:
         field_names.append('_id')
     kwargs = {attr: val for attr, val in mongo_obj.to_mongo().items() if attr in field_names}

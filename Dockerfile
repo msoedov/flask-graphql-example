@@ -7,4 +7,4 @@ ENV DEBUG 1
 
 EXPOSE 5000
 
-CMD ["./start_web.sh"]
+CMD ./start_web.sh

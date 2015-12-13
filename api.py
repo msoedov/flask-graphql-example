@@ -19,7 +19,7 @@ app.config.from_object('settings.DevConfig')
 
 toolbar = DebugToolbarExtension(app)
 
-logger = logging.getLogger('app')
+logger = logging.getLogger(__package__)
 
 
 def user_query(email):

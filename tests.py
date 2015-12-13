@@ -1,7 +1,7 @@
 from flask import url_for
 from flask.ext.testing import TestCase
 
-from api import app, schema
+from api import app, schema, GraphQLError
 from factories import PostFactory, UserFactory
 from models import Post
 from utils import run_query
@@ -55,26 +55,35 @@ class AppTestCase(TestCase):
 
 class AssertionMixin(object):
 
-    """Deprecated from python 3.2"""
+    """Helpfull assertion methods"""
 
     def assertDictContainsSubset(self, subset, dictionary, msg=None):
-        """Checks whether dictionary is a superset of subset."""
+        """
+        Checks whether dictionary is a superset of subset.
+        Deprecated from python 3.2
+        """
+        subset = dict(subset)
+        dictionary = dict(dictionary)
         missing = []
         mismatched = []
         for key, value in subset.items():
             if key not in dictionary:
                 missing.append(key)
+            elif value is id:
+                continue
+            elif isinstance(dictionary[key], dict) and isinstance(value, dict):
+                self.assertDictContainsSubset(value, dictionary[key])
             elif value != dictionary[key]:
                 mismatched.append('%s, expected: %s, actual: %s' %
-                                  (safe_repr(key), safe_repr(value),
-                                   safe_repr(dictionary[key])))
+                                  ((key), (value),
+                                   (dictionary[key])))
 
         if not (missing or mismatched):
             return
 
         standardMsg = ''
         if missing:
-            standardMsg = 'Missing: %s' % ','.join(safe_repr(m) for m in
+            standardMsg = 'Missing: %s' % ','.join((m) for m in
                                                    missing)
         if mismatched:
             if standardMsg:
@@ -84,7 +93,7 @@ class AssertionMixin(object):
         self.fail(self._formatMessage(msg, standardMsg))
 
 
-class QueryTestCase(TestCase):
+class QueryTestCase(AssertionMixin, TestCase):
 
     def create_app(self):
         return app
@@ -108,4 +117,18 @@ mutation myFirstMutation {
                 },
             }
         }
-        self.assertEqual(dict(data), expect)
+        self.assertDictContainsSubset(expect, data)
+
+    def test_user_creation_validation_error(self):
+        query = """
+mutation myFirstMutation {
+    createUser(email: 178, firstName: "Joe", lastName: "Doe") {
+        user {
+            id
+        }
+    }
+}
+        """
+        with self.assertRaises(GraphQLError):
+            data = run_query(schema, query)
+

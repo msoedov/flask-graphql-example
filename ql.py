@@ -20,17 +20,6 @@ def construct(object_type, mongo_obj):
     return object_type(**kwargs)
 
 
-class Query(graphene.ObjectType):
-    hello = graphene.String(description='A typical hello world')
-    ping = graphene.String(description='Ping someone', to=graphene.Argument(graphene.String))
-
-    def resolve_hello(self, args, info):
-        return 'World'
-
-    def resolve_ping(self, args, info):
-        return 'Pinging {}'.format(args.get('to'))
-
-
 class CommentField(graphene.ObjectType):
     content = graphene.String()
     name = graphene.String()

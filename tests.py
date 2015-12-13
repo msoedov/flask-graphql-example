@@ -53,6 +53,37 @@ class AppTestCase(TestCase):
         self.assertEqual(len(Post.objects.get(id=post.id).comments), 6)
 
 
+class AssertionMixin(object):
+
+    """Deprecated from python 3.2"""
+
+    def assertDictContainsSubset(self, subset, dictionary, msg=None):
+        """Checks whether dictionary is a superset of subset."""
+        missing = []
+        mismatched = []
+        for key, value in subset.items():
+            if key not in dictionary:
+                missing.append(key)
+            elif value != dictionary[key]:
+                mismatched.append('%s, expected: %s, actual: %s' %
+                                  (safe_repr(key), safe_repr(value),
+                                   safe_repr(dictionary[key])))
+
+        if not (missing or mismatched):
+            return
+
+        standardMsg = ''
+        if missing:
+            standardMsg = 'Missing: %s' % ','.join(safe_repr(m) for m in
+                                                   missing)
+        if mismatched:
+            if standardMsg:
+                standardMsg += '; '
+            standardMsg += 'Mismatched values: %s' % ','.join(mismatched)
+
+        self.fail(self._formatMessage(msg, standardMsg))
+
+
 class QueryTestCase(TestCase):
 
     def create_app(self):
@@ -73,7 +104,7 @@ mutation myFirstMutation {
         expect = {
             "createUser": {
                 "user": {
-                    'id': "Peter"
+                    'id': id
                 },
             }
         }

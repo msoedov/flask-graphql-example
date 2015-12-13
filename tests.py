@@ -61,6 +61,7 @@ class AssertionMixin(object):
         """
         Checks whether dictionary is a superset of subset.
         Deprecated from python 3.2
+        https://bugs.python.org/file32662/issue13248.diff
         """
         subset = dict(subset)
         dictionary = dict(dictionary)

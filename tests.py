@@ -131,5 +131,26 @@ mutation myFirstMutation {
 }
         """
         with self.assertRaises(GraphQLError):
-            data = run_query(schema, query)
+            run_query(schema, query)
 
+    def test_post_creation(self):
+        user = UserFactory()
+        query = """
+mutation myFirstMutation {
+    createPost(userId: "%s", title: "Just do it", content: "Yesterday you sad tomorrow") {
+        post {
+            id
+        }
+    }
+}
+        """ % user.id
+        data = run_query(schema, query)
+
+        expect = {
+            "createPost": {
+                "post": {
+                    'id': id
+                },
+            }
+        }
+        self.assertDictContainsSubset(expect, data)

@@ -29,6 +29,7 @@ def form_error(error):
 
 def format_result(result):
     if result.errors:
+        logger.debug(result.errors)
         raise result.errors[0]
     data = result.data
     return data

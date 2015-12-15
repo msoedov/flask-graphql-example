@@ -32,7 +32,7 @@ class CommentField(graphene.ObjectType):
 
 
 class PostField(graphene.ObjectType):
-    id = graphene.Int()
+    id = graphene.String()
     title = graphene.String()
     tags = graphene.List(graphene.String)
     etags = graphene.String()
@@ -83,6 +83,37 @@ class UserMutation(graphene.Mutation):
         return cls(user=construct(UserField, user))
 
 
+class PostMutation(graphene.Mutation):
+
+    class Input(object):
+        """Params for Post class"""
+        user_id = graphene.String()
+        title = graphene.String()
+        content = graphene.String()
+        tags = graphene.List(graphene.String)
+
+    post = graphene.Field(PostField)
+
+    @classmethod
+    def mutate(cls, _, info, __):
+        logger.debug("agrs %s", info)
+        post_schema = t.Dict({
+            'title': t.String(min_length=2),
+            'user_id': t.String(min_length=2),
+            'content': t.String(min_length=2),
+            t.Key('tags',
+                  optional=True): t.List(t.String,
+                                         min_length=1),
+        })
+
+        post_data = post_schema.check(info)
+        user_id = post_data.pop('user_id')
+        user = User.objects.get_or_404(id=user_id)
+        post = Post(author=user, **post_data)
+        post.save()
+        return cls(post=construct(PostField, post))
+
+
 class UserQuery(graphene.ObjectType):
     user = graphene.Field(UserField, email=graphene.Argument(graphene.String))
     ping = graphene.String(description='Ping someone',
@@ -98,5 +129,6 @@ class UserQuery(graphene.ObjectType):
 
 class UserMutationQuery(graphene.ObjectType):
     create_user = graphene.Field(UserMutation)
+    create_post = graphene.Field(PostMutation)
 
 schema = graphene.Schema(query=UserQuery, mutation=UserMutationQuery)

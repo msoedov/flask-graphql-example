@@ -4,7 +4,6 @@ import status
 import trafaret as t
 from flask import redirect, request
 from flask.ext.api import FlaskAPI
-from flask.ext.api.decorators import set_parsers
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_swagger import swagger
 from graphql.core.error import GraphQLError, format_error
@@ -22,61 +21,12 @@ toolbar = DebugToolbarExtension(app)
 logger = logging.getLogger(__package__)
 
 
-def user_query(email):
-    return '''
-    query Yo {
-      user(email: \"%s\") {
-            email,
-            posts {
-                title
-                etags
-                tags
-                comments {
-                    name
-                    content
-                }
-            }
-      }
-    }
-    ''' % email
-
-
 @app.route('/ui')
 def ui():
     return redirect('/static/index.html')
 
 
-@app.route('/ql', methods=['GET', 'POST'])
-@set_parsers(GraphQLParser)
-def index():
-    """
-    GraphQL query
-
-    query Yo {
-      user(email: "$email" ) {
-            email,
-            posts {
-                title
-                etags
-                tags
-                comments {
-                    name
-                    content
-                }
-            }
-      }
-    }
-
-    """
-    query = request.data or user_query("idella00@hotmail.com")
-
-    logger.debug('Query: %s', query)
-    result = schema.execute(query)
-    result_hash = format_result(result)
-    return result_hash
-
-
-@app.route('/graph-query', methods=['GET', 'POST'])
+@app.route('/graph-query', methods=['POST'])
 def query():
     """
     GraphQL query
@@ -102,53 +52,6 @@ def query():
     result = schema.execute(query)
     result_hash = format_result(result)
     return result_hash
-
-
-@app.route('/ql/<user_id>/posts', methods=['POST'])
-def create_post(user_id):
-    post_schema = t.Dict({
-        'title': t.String(min_length=2),
-        'content': t.String(min_length=2),
-        t.Key('tags',
-              optional=True): t.List(t.String,
-                                     min_length=1),
-    })
-
-    post_data = post_schema.check(request.data)
-    user = User.objects.get_or_404(id=user_id)
-    post = Post(author=user, **post_data)
-    post.save()
-    logger.debug('New post id %s', post.id)
-    # publish data to user channel
-    return {'id': str(post.id)}, status.HTTP_201_CREATED
-
-
-@app.route('/ql/users', methods=['POST'])
-def create_user():
-    user_schema = t.Dict({
-        'email': t.String(min_length=2),
-        'first_name': t.String(min_length=2),
-        'last_name': t.String(min_length=2),
-    })
-
-    user_data = user_schema.check(request.data)
-    user = User.objects.create(**user_data)
-    user.save()
-    return {'id': str(user.id)}, status.HTTP_201_CREATED
-
-
-@app.route('/ql/<user_id>/posts/<post_id>', methods=['POST'])
-def create_comment(user_id, post_id):
-    comment_schema = t.Dict({'name': t.String(min_length=2, max_length=30), 'content': t.String(min_length=2),})
-
-    comment_data = comment_schema.check(request.data)
-    post = Post.objects.get_or_404(id=post_id)
-    logger.debug(comment_data)
-    comment = Comment(**comment_data)
-    post.comments.append(comment)
-    post.save()
-    # publish data to user channel
-    return {}, status.HTTP_201_CREATED
 
 
 @app.errorhandler(t.DataError)

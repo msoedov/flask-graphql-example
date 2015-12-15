@@ -48,6 +48,7 @@ def query():
 
     """
     query = request.json.get('query')
+    variables = request.json.get('variables') # Todo: add handling variables
     logger.debug('Query: %s', request.json)
     result = schema.execute(query)
     result_hash = format_result(result)

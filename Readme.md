@@ -1,6 +1,7 @@
 Example of small GraphQL app with Flask + Python3/PyPy3 + MongoDb
 
 [![Build Status](https://travis-ci.org/msoedov/flask-graphql-example.svg?branch=master)](https://travis-ci.org/msoedov/flask-graphql-example)
+[![Code Issues](https://www.quantifiedcode.com/api/v1/project/44eede68b96745bdafee5a8a208ea3c3/badge.svg)](https://www.quantifiedcode.com/app/project/44eede68b96745bdafee5a8a208ea3c3)
 
 ### Quick start with docker
 

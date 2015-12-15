@@ -4,7 +4,7 @@ from functools import lru_cache
 import graphene
 import trafaret as t
 
-from models import Post, User
+from models import Post, User, Comment
 
 
 logger = logging.getLogger(__package__)
@@ -114,6 +114,34 @@ class PostMutation(graphene.Mutation):
         return cls(post=construct(PostField, post))
 
 
+class CommentMutation(graphene.Mutation):
+
+    class Input(object):
+        """Params for Comment class"""
+        post_id = graphene.String()
+        content = graphene.String()
+        name = graphene.String()
+
+    comment = graphene.Field(CommentField)
+    post = graphene.Field(PostField)
+
+    @classmethod
+    def mutate(cls, _, info, __):
+        logger.debug("agrs %s", info)
+        comment_schema = t.Dict({
+            'name': t.String(min_length=2, max_length=30),
+            'post_id': t.String(min_length=2, max_length=30),
+            'content': t.String(min_length=2), })
+
+        comment_data = comment_schema.check(info)
+        post_id = comment_data.pop('post_id')
+        post = Post.objects.get_or_404(id=post_id)
+        comment = Comment(**comment_data)
+        post.comments.append(comment)
+        post.save()
+        return cls(post=construct(PostField, post), comment=construct(CommentField, comment))
+
+
 class UserQuery(graphene.ObjectType):
     user = graphene.Field(UserField, email=graphene.Argument(graphene.String))
     ping = graphene.String(description='Ping someone',
@@ -130,5 +158,6 @@ class UserQuery(graphene.ObjectType):
 class UserMutationQuery(graphene.ObjectType):
     create_user = graphene.Field(UserMutation)
     create_post = graphene.Field(PostMutation)
+    make_comment = graphene.Field(CommentMutation)
 
 schema = graphene.Schema(query=UserQuery, mutation=UserMutationQuery)

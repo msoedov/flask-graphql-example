@@ -154,3 +154,25 @@ mutation myFirstMutation {
             }
         }
         self.assertDictContainsSubset(expect, data)
+
+    def test_make_commnet(self):
+        post = PostFactory()
+        query = """
+mutation myFirstMutation {
+    makeComment(postId: "%s", name: "Just do it", content: "Yesterday you sad tomorrow") {
+        post {
+            id
+        }
+    }
+}
+        """ % post.id
+        data = run_query(schema, query)
+
+        expect = {
+            "makeComment": {
+                "post": {
+                    'id': id
+                },
+            }
+        }
+        self.assertDictContainsSubset(expect, data)

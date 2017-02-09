@@ -6,7 +6,7 @@ from flask import redirect, request
 from flask.ext.api import FlaskAPI
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_swagger import swagger
-from graphql.core.error import GraphQLError, format_error
+from graphql.error import GraphQLError, format_error
 
 from factories import *
 from models import *

@@ -1,7 +1,7 @@
 default: format test
 
 test:
-	@nosetests --with-doctest --rednose --nocapture
+	@nosetests --with-doctest --rednose --nocapture -v
 
 
 watch:

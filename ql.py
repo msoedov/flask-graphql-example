@@ -87,6 +87,7 @@ class PostMutation(graphene.Mutation):
 
     class Input(object):
         """Params for Post class"""
+        post_id = graphene.String()
         user_id = graphene.String()
         title = graphene.String()
         content = graphene.String()

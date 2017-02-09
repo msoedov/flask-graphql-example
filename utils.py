@@ -1,6 +1,6 @@
 import logging
 from flask_api import parsers
-from graphql.core.error import GraphQLError, format_error
+from graphql.error import GraphQLError, format_error
 
 from factories import *
 from models import *
